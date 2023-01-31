@@ -11,7 +11,6 @@ def home():
 
 
 def run():
-    print(webview.get_current_url())
     app.run(host = '0.0.0.0', port = 8080)
 
 def schedule():
