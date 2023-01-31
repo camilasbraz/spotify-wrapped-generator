@@ -7,7 +7,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from oauth2client.service_account import ServiceAccountCredentials
 
 from config import *
+from schedule import *
 
+schedule()
 # Returns id of tracks
 def get_track_ids(time_frame):
     track_ids = []
