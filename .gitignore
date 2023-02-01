@@ -5,3 +5,4 @@ gets_aux.py
 Dockerfile
 .cache-camilabraz03
 readme_pics
+__pycache__
