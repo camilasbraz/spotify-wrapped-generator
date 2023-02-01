@@ -9,6 +9,13 @@ from oauth2client.service_account import ServiceAccountCredentials
 from config import *
 from schedule import *
 
+from datetime import date
+
+today = date.today()
+# dd/mm/YY
+current_date = today.strftime("%d/%m/%Y")
+
+
 schedule()
 # Returns id of tracks
 def get_track_ids(time_frame):
@@ -19,34 +26,41 @@ def get_track_ids(time_frame):
 
 
 def playlistGen():
-
+    print("playgen")
     time_ranges = ['short_term', 'medium_term', 'long_term']
     for time_period in time_ranges:
-
+        
         playlistExists = False
+        
+        if time_period == "short_term":
+            period = "Last month"
+        elif time_period == "medium_term":
+            period = "Last 6 months"
+        elif time_period == "long_term":
+            period = "Lifetime"
 
+        # period = time_period.replace("_", " ")
         top_tracks = spot.current_user_top_tracks(
             limit=50, offset=0, time_range=time_period)
         track_ids = get_track_ids(top_tracks)
 
-        period = time_period.replace("_", " ")
-    
         playlists = spot.current_user_playlists()
+
         
         for playlist in playlists['items']:
-            if playlist['name'] == f'{period} - Top Tracks': 
+            if playlist['name'] == f'Top tracks from {period}': 
                 playlist_id = playlist['id']
                 # Update songs in existing playlist
                 spot.user_playlist_replace_tracks(USERNAME, playlist_id, track_ids)
-                spot.user_playlist_change_details(USERNAME, playlist_id, description=f'My Top Played Tracks for {period}. Updated every {time_to_wait} hours.')
+                spot.user_playlist_change_details(USERNAME, playlist_id, description=f'My Top Played Tracks for {period}. Updated every {time_to_wait} hours. Last updated on {current_date}')
                 playlistExists = True
                 print(f'{period} Top Tracks playlist updated.\n')
                 break
 
         # Create playlist
         if not playlistExists:
-            playlist_id = spot.user_playlist_create(USERNAME, f'{period} - Top Tracks', public=True, collaborative=False,
-                                                  description=f'My Top Played Tracks for {period}. Updated every {time_to_wait} hours.')['id']
+            playlist_id = spot.user_playlist_create(USERNAME, f'Top tracks from {period}', public=True, collaborative=False,
+                                                  description=f'My Top Played Tracks for {period}. Updated every {time_to_wait} hours. Last updated on {current_date}')['id']
             spot.user_playlist_add_tracks(USERNAME, playlist_id, track_ids)
             with open(f"covers/{time_period}.jpg", 'rb') as image:
                 cover_encoded = base64.b64encode(image.read()).decode("utf-8")
@@ -61,6 +75,7 @@ def loop():
             playlistGen()
             print(f'\nNice!!!!\n')
             time.sleep(time_to_wait * 3600)
+            
         except Exception as e:
             print(f'\Exception:\n{e}\n\n{traceback.format_exc()}\n\n')
             time.sleep(600)
