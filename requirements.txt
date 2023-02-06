@@ -2,4 +2,4 @@ oauth2client
 python-dotenv
 spotipy
 flask
-piwebview
+pywebview
