@@ -49,7 +49,7 @@ The first time you run the code, you will be asked to go to an URL, log on spoti
 
 `Timeout: 30 seconds`
 
-The remaining configurations can be default, just scroll down and click on `Create the Monitor`
+The remaining configurations can be set to default, just scroll down and click on `Create the Monitor`
 
 9. Rerun the cond on repl
 
